@@ -1,7 +1,34 @@
 import * as React from 'react';
-import {Text,View,TextInput,StyleSheet,TouchableOpacity} from 'react-native';
+import {Text,View,TextInput,StyleSheet,TouchableOpacity,ScrollView} from 'react-native';
 
 export default class App extends React.Component{
+  constructor(){
+    super();
+    this.state = {
+      newItem : '',
+      listOfItems : []
+    }
+  }
+  addItem = () => {
+    if(this.state.newItem != ''){
+      //create a new item with unique id
+      const newItemJSON = {
+        id : 1 + Math.random(),
+        value : this.state.newItem.charAt(0).toUpperCase()+this.state.newItem.slice(1)
+      }
+      //copy current list of items
+      const list = this.state.listOfItems;
+
+      //add the new item to this list
+      list.push(newItemJSON);
+
+      //update state with new list, reset the new item
+      this.setState({
+        listOfItems : list,
+        newItem : ''
+      })
+    }
+  }
   render(){
     return(
       <View style = {styles.parentContainer}>
@@ -12,12 +39,26 @@ export default class App extends React.Component{
           <TextInput
               placeholder = "Type item here..."
               style = {styles.inputBox}
+              onChangeText ={(text) => {
+                this.setState({newItem : text})
+              }}
+              value = {this.state.newItem}
           >
            </TextInput>
-           <TouchableOpacity style = {styles.addButton}>
+           <TouchableOpacity style = {styles.addButton} onPress = {this.addItem}>
              <Text style = {{color: 'white'}}>ADD</Text>
            </TouchableOpacity>
         </View>
+        <ScrollView>{
+          this.state.listOfItems.map((item) => {
+            return(
+              <View style = {styles.listView}>
+                <Text style = {styles.textStyle}>{item.value}</Text>
+              </View>
+            )
+          })
+        }
+        </ScrollView>
       </View>
     )
   }
@@ -55,4 +96,21 @@ const styles = StyleSheet.create({
     margin : '20px',
     borderRadius : 20,
   },
+  textStyle : {
+    borderWidth : 2,
+    borderRadius :15,
+    marginTop : 2,
+    width : 200,
+    height : 40,
+    textAlign : 'center',
+    padding :5,
+    textSize :15,
+    backgroundColor : '#ffc4ec',
+    fontSize : 15,
+    fontWeight : 'bold'
+  },
+  listView : {
+    flexDirection : 'row',
+    margin : 2
+  }
 })
