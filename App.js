@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Text,View,TextInput,StyleSheet,TouchableOpacity,ScrollView} from 'react-native';
+import {Text,View,TextInput,StyleSheet,TouchableOpacity,ScrollView,Image} from 'react-native';
 
 export default class App extends React.Component{
   constructor(){
@@ -8,6 +8,25 @@ export default class App extends React.Component{
       newItem : '',
       listOfItems : []
     }
+  }
+  deleteItem(id){
+    //get all the list items
+    const list = this.state.listOfItems;
+
+    //filter the list and create another list which is basically the list item to be deleted
+    const updatedList = list.filter(item => item.id !== id)
+
+    //set the state with the updated list
+    this.setState({
+      listOfItems : updatedList
+    })
+  }
+  updateInput(key,value){
+
+    //updating react state
+    this.setState({
+      [key] : value
+    })
   }
   addItem = () => {
     if(this.state.newItem != ''){
@@ -54,6 +73,11 @@ export default class App extends React.Component{
             return(
               <View style = {styles.listView}>
                 <Text style = {styles.textStyle}>{item.value}</Text>
+                <TouchableOpacity onPress = {() => {
+                  this.deleteItem(item.id)
+                }}>
+                  <Image source = {require("./assets/deleteIcon.png")} style = {styles.listText}/>
+                </TouchableOpacity>
               </View>
             )
           })
@@ -112,5 +136,10 @@ const styles = StyleSheet.create({
   listView : {
     flexDirection : 'row',
     margin : 2
+  },
+  listText : {
+    width : 20,
+    height : 20,
+    padding : 20
   }
 })
